@@ -1,3 +1,7 @@
+/**
+ * 给定一个数组，任意两个不同的元素组队，求满足两个元素异或值大于m的有多少对
+ */
+
 #include <iostream>
 
 #define MAX_INDEX 16
