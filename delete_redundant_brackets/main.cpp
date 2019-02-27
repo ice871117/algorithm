@@ -24,79 +24,106 @@
 #include <string>
 #include <stack>
 #include <set>
+#include <queue>
+#include <map>
 
 using namespace std;
 
 class Solution {
 public:
     vector<string> removeInvalidParentheses(string s) {
-        int start = 0;
-        int end = 0;
-        stack<char> brackets_match;
-        for (auto i = s.begin(); i != s.end(); i++, end++) {
-            char curr = *i;
-            if (brackets_match.empty()) {
-                if (curr == '(') {
-                    brackets_match.push(curr);
-                } else if (curr == ')') {
-                    splited.push_back(s.substr(start, end - start + 1));
-                    is_splited_valid.push_back(false);
-                    start = end + 1;
-                    continue;
-                }
-            } else {
-                if (curr == '(') {
-                    brackets_match.push(curr);
-                } else if (brackets_match.top() == '(' && curr == ')') {
-                    brackets_match.pop();
-                }
-            }
-            if (i + 1 == s.end()) {
-                splited.push_back(s.substr(start, end - start + 1));
-                is_splited_valid.push_back(brackets_match.empty());
-            }
+        vector<string> result;
+        stack<char> to_remove;
+        s = pre_process(s);
+        if (s.empty()) {
+            result.push_back(s);
+            return result;
         }
-        print("split is : ", splited);
-        long size = splited.size();
-        if (size == 1 && brackets_match.size() > 0) {
-            cout << "not implemented for redundant left brackets " << endl;
-        } else {
-            for (int i = 0; i < size; i++) {
-                set<string> temp;
-                if (!is_splited_valid[i]) {
-                    make_valid(splited[i], temp);
+        for (auto i = s.begin(); i != s.end(); i++) {
+            const char curr = *i;
+            if (curr == '(') {
+                to_remove.push(curr);
+            } else if (curr == ')') {
+                if (!to_remove.empty() && to_remove.top() == '(') {
+                    to_remove.pop();
                 } else {
-                    temp.insert(splited[i]);
+                    to_remove.push(curr);
                 }
-                valid_strings.push_back(temp);
             }
         }
-        for (auto i = valid_strings.begin(); i != valid_strings.end(); i++) {
-            print("new segment : ", *i);
+        if (to_remove.empty()) {
+            result.push_back(s);
+            return result;
         }
 
+        set<string> temp;
+        find_valid(s, to_remove, temp);
+        for (auto i = temp.begin(); i != temp.end(); i++) {
+            result.push_back(*i);
+        }
 
+        print("result is : ", result);
+        return result;
     }
-private:
-    vector<bool> is_splited_valid;
-    vector<string> splited;
-    vector<set<string>> valid_strings;
 
-    void make_valid(string &s, set<string> &out) {
-        int str_len = s.size();
-        for (int i = 0; i < str_len; i++) {
+private:
+    set<string> cache;
+
+    string pre_process(string s) {
+        for (int i = 0; i < s.size();) {
             char curr = s[i];
-            if (curr == '(' || curr == ')') {
+            if (curr == '(') {
+                break;
+            } else if (curr == ')') {
+                s.erase(i, 1);
+            } else {
+                i++;
+            }
+        }
+        for (int i = s.size() - 1; i >= 0;) {
+            char curr = s[i];
+            if (curr == ')') {
+                break;
+            } else if (curr == '(') {
+                s.erase(i, 1);
+            } else {
+                i--;
+            }
+        }
+        return s;
+    }
+
+    void find_valid(string &s, stack<char> &to_remove, set<string> &result) {
+        bool last_round = to_remove.size() == 1;
+        int size = s.size();
+        for (int i = 0; i < size; i++) {
+            char curr = s[i];
+            char top = to_remove.top();
+            if (curr == top) {
                 string temp = s;
-                temp.erase(i, 1);
-                if (is_valid(temp)) {
-                    out.insert(temp);
+                if (last_round) {
+                    temp.erase(i, 1);
+                    if (is_valid(temp)) {
+                        result.insert(temp);
+                    }
+                } else {
+                    temp.erase(i, 1);
+                    if (cache.find(temp) != cache.end()) {
+                        continue;
+                    }
+                    to_remove.pop();
+                    find_valid(temp, to_remove, result);
+                    to_remove.push(top);
                 }
             }
         }
+        cache.insert(s);
     }
 
     bool is_valid(string &s) {
+        if (s.empty()) {
+            return false;
+        }
         stack<char> brackets_match;
         for (auto i = s.begin(); i != s.end(); i++) {
             char curr = *i;
@@ -123,17 +150,13 @@ private:
             cout << *i << endl;
         }
     }
-
-    void print(const string &title, set<string> toprint) {
-        cout << title << endl;
-        for (auto i = toprint.begin(); i != toprint.end(); i++) {
-            cout << *i << endl;
-        }
-    }
 };
+
 
 int main() {
     Solution solution;
-    solution.removeInvalidParentheses("(a)())()");
+//    solution.removeInvalidParentheses(")()))())))");
+//    solution.removeInvalidParentheses("(a)())()");
+    solution.removeInvalidParentheses("())((((((((((b))(");
     return 0;
 }
