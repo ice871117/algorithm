@@ -49,7 +49,7 @@ public:
             return false;
         }
         for (auto iter = nums.begin(); iter != nums.end(); iter++) {
-            if (find_and_possibilities(*iter, sum / 2)) {
+            if (find_any_possibilities(*iter, sum / 2)) {
                 return true;
             }
         }
@@ -59,7 +59,7 @@ public:
 private:
     set<int> possibilities;
 
-    bool find_and_possibilities(int t, int target) {
+    bool find_any_possibilities(int t, int target) {
         if (possibilities.empty()) {
             possibilities.insert(t);
             return t == target;
