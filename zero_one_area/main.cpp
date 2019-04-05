@@ -17,14 +17,22 @@ int resolve(int a[8][8], int w, int h) {
     // print
     cout << "after resolve:" << endl;
     for (int i = 1; i < h; i++) {
+        int max_in_row = 0;
+        int acc = 1;
         for (int j = 0; j < w; j++) {
             if (a[i-1][j] > 0 && a[i][j] > 0) {
                 a[i][j] = a[i-1][j] + 1;
             }
             int curr = a[i][j];
+            if (max_in_row != curr) {
+                acc = 1;
+                max_in_row = std::max(curr, max_in_row);
+            } else {
+                acc++;
+            }
             if (curr == 1 && curr > max) {
                 max = 1;
-            } else if (j > 0 && curr == a[i][j-1] && curr > max) {
+            } else if (j > 0 && curr == a[i][j-1] && curr > max && curr == acc) {
                 max = curr;
             }
             cout << curr << " ";
