@@ -26,12 +26,10 @@ void printFullSequence(vector<int> &v) {
     while (1) {
         int index = -1;
         printVec(v);
-        if (len < 2) {
-            return;
-        }
-        for (int i = len - 2; i >= 0; i--) {
-            if (v[i] < v[i + 1]) {
-                index = i;
+        for (int i = len - 1; i >= 1; i--) {
+            if (v[i - 1] < v[i]) {
+                index = i - 1;
+                break;
             }
             count1++;
         }
