@@ -10,3 +10,4 @@ local.properties
 cmake-build-debug
 cmake-build-debug/
 out
+.vscode
