@@ -6,15 +6,19 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class Solution {
 
-    fun main(args: Array<String>) {
-        val nums = intArrayOf(-1, 0, 1)
-        val result = threeSum(nums)
-        println("[")
-        for (list in result) {
-            println(list)
+    companion object {
+        @JvmStatic
+        public fun main(args: Array<String>) {
+            val nums = intArrayOf(-1, 0, 1)
+            val result = MySolution.threeSum(nums)
+            println("[")
+            for (list in result) {
+                println(list)
+            }
+            println("]")
         }
-        println("]")
     }
+
 
     object MySolution {
         private val inc = AtomicInteger(0)
