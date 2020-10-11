@@ -87,20 +87,20 @@ public class Solution {
                         result.add(ret);
                         visted.add(pair);
                     }
+                    increase();
                     new CalcTask( start + 1, end, nums, result).fork();
                     increase();
                     new CalcTask(start, end - 1, nums, result).fork();
-                    increase();
                     working = false;
                 } else if (startValue + endValue > 0) {
                     end--;
                 } else if (startValue + endValue < 0) {
                     start++;
                 } else {
+                    increase();
                     new CalcTask( start + 1, end, nums, result).fork();
                     increase();
                     new CalcTask(start, end - 1, nums, result).fork();
-                    increase();
                     working = false;
                 }
             }
@@ -123,6 +123,11 @@ public class Solution {
 
         pool.invoke(new CalcTask(start, end, nums, tempQueue));
         increase();
+        try {
+            Thread.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         for (;;) {
             if (inc.get() == 0) {
                 break;
